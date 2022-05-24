@@ -13,7 +13,7 @@ async function app() {
     const res = await submitForm(taskId,templateId,detailsId)
 
     const {code,msg:message} = res
-    const title = 'glados自动签到'
+    const title = '日报自动签到'
     const msg = `执行成功!message:${code}${message}`
     const msgUrl = encodeURI(`https://sctapi.ftqq.com/${SendKey}.send?title=${title}&desp=${msg}`)
     axios.post(msgUrl)
