@@ -2,17 +2,22 @@ import axios from 'axios'
 import dayjs from 'dayjs';
 import qs from 'qs';
 
-
+const SendKey = 'SCT148970TyzpzKKd24RNo7y5OEv3oj0Th'
 const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySW5mbyI6IntcInBlcm1pc3Npb25cIjpbXCJzdHVkZW50XCJdLFwic3lzVXNlclwiOntcImNvbGxlZ2VcIjpcIjNcIixcImNvbGxlZ2VPcmdJZFwiOlwiYzYyYWY5YWM4YzA1NGI0Mzg4ZTY3MjhmODQ3NjkwODNcIixcImNyZWF0ZVRpbWVcIjoxNjQxODg5MDc2MDAwLFwiY3JlYXRvclwiOlwiNjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2XCIsXCJlbmNvZGVVc2VyTmFtZVwiOlwiZGE1ZTM0MjdiNzM4MDc4YjZiYTBlZWVjMDYxNjA3NWVcIixcImdyYWRlT3JnSWRcIjpcIjJmNzQ3OGVkMWEwMDRkMzBiYTJlN2M2NzA2N2ZhNjg0XCIsXCJpZFwiOlwiMWM1ODVkNTM5NjI1NDA3MGI2MzQ3ODZmNjA3MjRlZWFcIixcImlzTWFpblwiOlwiMVwiLFwibWFqb3JPcmdJZFwiOlwiNjJmOThmMmE3ZjliNDQ1NDgxYjI1YjE3NDdkY2JlY2VcIixcIm5hbWVcIjpcIuWQtOadqOWGsFwiLFwicGFzc3dvcmRcIjpcIjg2NjQxZDJkNWE0YWI5YmU5OWM2Y2M4YTQyN2I0ZGM2XCIsXCJwb3NpdGlvblwiOlwiM1wiLFwicmVtb3ZlVGFnXCI6XCIwXCIsXCJ1cGRhdGVUaW1lXCI6MTY0Njg3NDYwMzAwMCxcInVwZGF0ZXJcIjpcIjhmM2RlZWE0ODNmOTQxNzY5MjVhODA4NDg4ZWUzOThjXCIsXCJ1c2VyTmFtZVwiOlwiMjAxODAxMTQ3MFwiLFwidXNlclVuaXF1ZVwiOlwiZGE1ZTM0MjdiNzM4MDc4YjZiYTBlZWVjMDYxNjA3NWVcIixcInZhbGlkU3RhdGVcIjpcIjFcIn0sXCJ1c2VySWRcIjpcIjFjNTg1ZDUzOTYyNTQwNzBiNjM0Nzg2ZjYwNzI0ZWVhXCJ9IiwiaXNzIjoiYXV0aDAiLCJleHAiOjE2NTM3MjQzNDQsImlhdCI6MTY1MzExOTU0NH0.1WFM4HQRddr26-S8-kg4b0zTkV-xoShCzvTeKIVV-Ec'
 
 async function app() {
     const list = await findTempList()
     const {id:taskId,templateId:templateId} = list[0]
     const formList = await findFormList(taskId)
-    console.log(formList)
-
     const {id:detailsId} = formList[0]
     const res = await submitForm(taskId,templateId,detailsId)
+
+    const {code,msg:message} = res
+    const title = 'glados自动签到'
+    const msg = `执行成功!message:${code}${message}`
+    const msgUrl = encodeURI(`https://sctapi.ftqq.com/${SendKey}.send?title=${title}&desp=${msg}`)
+    axios.post(msgUrl)
+    console.log(msg);
 }
 
 /**
@@ -93,8 +98,7 @@ async function submitForm(taskId,templateId,detailsId) {
         isSave: 1,
         answer: JSON.stringify(answer)
     }
-    console.log(params);
-    const res = await axios({
+    const {data} = await axios({
         url,
         method: "POST",
         headers: {
@@ -103,7 +107,6 @@ async function submitForm(taskId,templateId,detailsId) {
         },
         data: qs.stringify(params)
     })
-    console.log(res);
-   
+    return data
 }
 app()
