@@ -28,7 +28,7 @@ async function findTempList() {
     const url = 'https://xgpt.wxc.edu.cn/work/asd/epidemicDailyTask/findVoPageByToken.do'
     const parmas = {
         pageNum: 1,
-        pageSize: 999
+        pageSize: 20
     }
     const { data: { data: list } } = await axios({
         url,
